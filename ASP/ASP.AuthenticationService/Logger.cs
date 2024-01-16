@@ -2,7 +2,7 @@
 
 namespace ASP.AuthenticationService
 {
-    public class Logger
+    public class Logger : ILogger
     {
         public void WriteEvent(string eventMessage)
         {
