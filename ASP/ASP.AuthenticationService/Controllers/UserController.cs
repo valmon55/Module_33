@@ -15,7 +15,7 @@ namespace ASP.AuthenticationService.Controllers
             _logger = logger;
             _mapper = mapper;
             logger.WriteEvent("Сообщение о событии в программе");
-            logger.WriteError("Сообщение об ошибки в программе");
+            logger.WriteError("Сообщение об ошибке в программе");
         }
         [HttpGet]
         public User GetUser()
