@@ -60,7 +60,7 @@ namespace ASP.AuthenticationService.Controllers
 
             return userViewModel;
         }
-        [HttpPost]
+        [HttpGet]
         [Route("authenticate")]
         public async Task<UserViewModel> Authenticate(string login, string password)
         {
@@ -77,7 +77,7 @@ namespace ASP.AuthenticationService.Controllers
             var claims = new List<Claim>()
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType, user.Login),
-                new Claim(ClaimsIdentity.DefaultNameClaimType, user.Role.Name)
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role.Name)
             };
 
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(
