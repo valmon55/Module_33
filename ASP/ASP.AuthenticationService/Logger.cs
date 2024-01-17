@@ -1,45 +1,49 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ASP.AuthenticationService
 {
     public class Logger : ILogger
     {
-        DirectoryInfo logDirectory;
-        FileInfo eventFile;
-        FileInfo errorFile;
-        public Logger() 
+        private ReaderWriterLockSlim lock_ = new ReaderWriterLockSlim();
+        private string logDirectory { get; set; }
+        public Logger()
         {
-            logDirectory = new DirectoryInfo("Log_" + DateTime.Now.Day.ToString() + "_" +
-                                                      DateTime.Now.Month.ToString() + "_" +
-                                                      DateTime.Now.Year.ToString() + "_" +
-                                                      DateTime.Now.Hour.ToString() + "_" +
-                                                      DateTime.Now.Minute.ToString() + "_" +
-                                                      DateTime.Now.Second.ToString() + "_" +
-                                                      DateTime.Now.Millisecond.ToString()
-                );
-            if (!logDirectory.Exists)
-            {
-                logDirectory.Create();
-            }
-            eventFile = new FileInfo($"{logDirectory}\\event.txt");
-            errorFile = new FileInfo($"{logDirectory}\\error.txt");
+            logDirectory = AppDomain.CurrentDomain.BaseDirectory + @"/_logs/" + DateTime.Now.ToString("dd-MM-yy HH-mm-ss") + @"/";
+
+            if (!Directory.Exists(logDirectory))
+                Directory.CreateDirectory(logDirectory);
         }
-        public async void WriteEvent(string eventMessage)
+        public void WriteEvent(string eventMessage)
         {
-            //Console.WriteLine(eventMessage);
-            using(var sw = eventFile.CreateText())
+            lock_.EnterWriteLock();
+            try
             {
-                await sw.WriteLineAsync(eventMessage);
+                using (StreamWriter writer = new StreamWriter(logDirectory + "events.txt", append: true))
+                {
+                    writer.WriteLine(eventMessage);
+                }
+            }
+            finally
+            {
+                lock_.ExitWriteLock();
             }
         }
-        public async void WriteError(string errorMessage)
+        public void WriteError(string errorMessage)
         {
-            //Console.WriteLine(errorMessage);
-            using(var sw = errorFile.CreateText()) 
-            { 
-                await sw.WriteLineAsync(errorMessage);
+            lock_.EnterWriteLock();
+            try
+            {
+                using (StreamWriter writer = new StreamWriter("errors.txt", append: true))
+                {
+                    writer.WriteLine(errorMessage);
+                }
+            }
+            finally
+            {
+                lock_.ExitWriteLock();
             }
         }
     }
