@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Security.Authentication;
 
 namespace ASP.AuthenticationService.Controllers
 {
@@ -9,11 +10,13 @@ namespace ASP.AuthenticationService.Controllers
     public class UserController : ControllerBase
     {
         private readonly IMapper _mapper;
+        private readonly IUserRepository _userRepository;
         private ILogger _logger;
-        public UserController(ILogger logger, IMapper mapper) 
+        public UserController(ILogger logger, IMapper mapper, IUserRepository repo) 
         {
             _logger = logger;
             _mapper = mapper;
+            _userRepository = repo;
             logger.WriteEvent("Сообщение о событии в программе");
             logger.WriteError("Сообщение об ошибке в программе");
         }
@@ -47,6 +50,22 @@ namespace ASP.AuthenticationService.Controllers
             var userViewModel = _mapper.Map<UserViewModel>(user);
 
             return userViewModel;
+        }
+        [HttpPost]
+        [Route("authenticate")]
+        public UserViewModel Authenticate(string login, string password)
+        {
+            if (String.IsNullOrEmpty(login) ||
+                    String.IsNullOrEmpty(password))
+                throw new ArgumentNullException("Запрос не корректен");
+            
+            User user = _userRepository.GetByLogin(login);
+            if (user is null)
+                throw new AuthenticationException("Пользователь не найден!");
+            if(user.Password != password)
+                throw new AuthenticationException("Введённый пароль не корректен!");
+
+            return _mapper.Map<UserViewModel>(user);
         }
     }
 }
