@@ -67,6 +67,7 @@ namespace ASP.AuthenticationService
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ASP.AuthenticationService v1"));
             }
+            app.UseLogMiddleware();
 
             app.UseRouting();
 
