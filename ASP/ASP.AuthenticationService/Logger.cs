@@ -1,12 +1,31 @@
 ﻿using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace ASP.AuthenticationService
 {
     public class Logger : ILogger
     {
-        public void WriteEvent(string eventMessage)
+        DirectoryInfo logDirectory;
+        FileInfo eventFile;
+        FileInfo errorFile;
+        public Logger() 
         {
-            Console.WriteLine(eventMessage);
+            logDirectory = new DirectoryInfo("Log" + DateTime.Now.ToString());
+            if (!logDirectory.Exists)
+            {
+                logDirectory.Create();
+            }
+            eventFile = new FileInfo("event.txt");
+            errorFile = new FileInfo("error.txt");
+        }
+        public async Task WriteEvent(string eventMessage)
+        {
+            //Console.WriteLine(eventMessage);
+            using(var sw = eventFile.CreateText())
+            {
+                await sw.WriteLineAsync(eventMessage);
+            }
         }
         public void WriteError(string errorMessage)
         {
