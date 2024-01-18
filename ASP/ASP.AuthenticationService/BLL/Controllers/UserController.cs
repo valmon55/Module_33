@@ -1,4 +1,7 @@
-﻿using AutoMapper;
+﻿using ASP.AuthenticationService.BLL.Exceptions;
+using ASP.AuthenticationService.BLL.Middlevwares;
+using ASP.AuthenticationService.DAL;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -9,7 +12,7 @@ using System.Security.Authentication;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace ASP.AuthenticationService.Controllers
+namespace ASP.AuthenticationService.BLL.Controllers
 {
     [ExceptionHandler]
     [ApiController]
@@ -19,7 +22,7 @@ namespace ASP.AuthenticationService.Controllers
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
         private ILogger _logger;
-        public UserController(ILogger logger, IMapper mapper, IUserRepository repo) 
+        public UserController(ILogger logger, IMapper mapper, IUserRepository repo)
         {
             _logger = logger;
             _mapper = mapper;
@@ -64,14 +67,14 @@ namespace ASP.AuthenticationService.Controllers
         [Route("authenticate")]
         public async Task<UserViewModel> Authenticate(string login, string password)
         {
-            if (String.IsNullOrEmpty(login) ||
-                    String.IsNullOrEmpty(password))
+            if (string.IsNullOrEmpty(login) ||
+                    string.IsNullOrEmpty(password))
                 throw new ArgumentNullException("Запрос не корректен");
-            
+
             User user = _userRepository.GetByLogin(login);
             if (user is null)
                 throw new AuthenticationException("Пользователь не найден!");
-            if(user.Password != password)
+            if (user.Password != password)
                 throw new AuthenticationException("Введённый пароль не корректен!");
 
             var claims = new List<Claim>()

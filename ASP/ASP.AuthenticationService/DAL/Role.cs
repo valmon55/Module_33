@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ASP.AuthenticationService
+namespace ASP.AuthenticationService.DAL
 {
     public class Role
     {

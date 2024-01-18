@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Net.Mail;
+using ASP.AuthenticationService.DAL;
 
-namespace ASP.AuthenticationService
+namespace ASP.AuthenticationService.BLL
 {
     public class UserViewModel
     {
@@ -16,7 +17,7 @@ namespace ASP.AuthenticationService
         }
         public string GetFullName(string firstName, string lastName)
         {
-            return String.Concat(firstName, " ", lastName);
+            return string.Concat(firstName, " ", lastName);
         }
         public bool GetFromRussiaValue(string email)
         {

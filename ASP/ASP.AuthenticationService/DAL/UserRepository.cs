@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ASP.AuthenticationService
+namespace ASP.AuthenticationService.DAL
 {
     public class UserRepository : IUserRepository
     {
         private readonly List<User> _users = new List<User>();
-        public UserRepository() 
+        public UserRepository()
         {
             _users.Add(new User()
             {
@@ -17,7 +17,7 @@ namespace ASP.AuthenticationService
                 Email = "ivan@gmail.com",
                 Password = "11111122222qq",
                 Login = "ivanov",
-                Role = new Role() { Id = 1, Name = "Пользователь"}
+                Role = new Role() { Id = 1, Name = "Пользователь" }
             });
 
             _users.Add(new User()

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ASP.AuthenticationService
+namespace ASP.AuthenticationService.DAL
 {
     public interface IUserRepository
     {

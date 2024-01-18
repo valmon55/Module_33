@@ -1,4 +1,4 @@
-﻿namespace ASP.AuthenticationService
+﻿namespace ASP.AuthenticationService.BLL.Middlevwares
 {
     public interface ILogger
     {
